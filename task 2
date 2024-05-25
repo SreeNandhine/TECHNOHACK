@@ -1,0 +1,32 @@
+from textblob import TextBlob
+import matplotlib.pyplot as plt
+
+# Example tweets
+tweets = [
+    "I love this movie! It's amazing.",
+    "The weather today is terrible.",
+    "I'm feeling neutral about this.",
+    "This restaurant has great food but terrible service."
+]
+
+# Perform sentiment analysis on each tweet
+sentiments = {'Positive': 0, 'Negative': 0, 'Neutral': 0}
+for tweet in tweets:
+    analysis = TextBlob(tweet)
+    polarity = analysis.sentiment.polarity
+    if polarity > 0:
+        sentiments['Positive'] += 1
+    elif polarity < 0:
+        sentiments['Negative'] += 1
+    else:
+        sentiments['Neutral'] += 1
+
+# Plotting the sentiment distribution
+labels = list(sentiments.keys())
+counts = list(sentiments.values())
+
+plt.bar(labels, counts, color=['green', 'red', 'blue'])
+plt.xlabel('Sentiment')
+plt.ylabel('Count')
+plt.title('Sentiment Analysis of Tweets')
+plt.show()
