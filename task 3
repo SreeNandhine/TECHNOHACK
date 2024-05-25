@@ -1,0 +1,64 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Example dataset
+data = {
+    'age': [30, 35, 40, 45, 50],
+    'salary': [50000, 60000, 70000, 80000, 90000],
+    'years_experience': [5, 7, 10, 15, 20],
+    'satisfaction_score': [3, 4, 2, 5, 4],
+    'attrition': ['No', 'Yes', 'No', 'Yes', 'No']
+}
+
+df = pd.DataFrame(data)
+
+# Data Preprocessing
+# Preprocessing steps can be added here, such as encoding categorical variables
+
+# Split data into features (X) and target variable (y)
+X = df.drop('attrition', axis=1)  # Features
+y = df['attrition']  # Target variable
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the Random Forest classifier
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Make predictions on the testing set
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+class_report = classification_report(y_test, y_pred)
+
+print("Accuracy:", accuracy)
+print("Confusion Matrix:\n", conf_matrix)
+print("Classification Report:\n", class_report)
+
+# Plot confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.title('Confusion Matrix')
+plt.show()
+
+# Plot feature importances
+feature_importances = model.feature_importances_
+feature_names = X.columns
+sorted_idx = np.argsort(feature_importances)[::-1]
+
+plt.figure(figsize=(10, 6))
+sns.barplot(x=feature_importances[sorted_idx], y=feature_names[sorted_idx])
+plt.xlabel('Feature Importance')
+plt.ylabel('Features')
+plt.title('Feature Importances')
+plt.show()
